@@ -1,0 +1,12 @@
+<!--
+1.模板中标记的使用，包括变量、循环、逻辑判断；
+2.模板继承；
+-->
+
+{% extends "base.html" %}
+{% block content %}
+<h1>Hi, {{user.nickname}}!</h1>
+{% for post in posts %}
+<div><p>{{post.author.nickname}} says: <b>{{post.body}}</b></p></div>
+{% endfor %}
+{% endblock %}
