@@ -7,7 +7,10 @@
     {{ form.hidden_tag() }}
     <p>
         Please enter you OpenID:<br>
-        {{ form.openid(size=80) }}<br>
+        {{ form.openid(size=20) }}<br>
+        {% for error in form.errors.open_id %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
     </p>
     <p>{{ form.remember_me }}Remember Me</p>
     <p><input type="submit" value="Sign In"></p>
