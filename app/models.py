@@ -1,7 +1,8 @@
 # coding=utf-8
 
 from app import db
-from sqlalchemy import Column, Integer, String, SmallInteger
+from sqlalchemy import Column, Integer, String, SmallInteger, DateTime, \
+    ForeignKey
 from database import Base
 
 ROLE_USER = 0
@@ -18,10 +19,17 @@ class User(Base):
     email = Column(String(120), index=True, unique=True)
     role = Column(SmallInteger, default=ROLE_USER)
 
-    def __init__(self, name=None, email=None, role=None):
-        self.name = name
-        self.email = email
-        self.role = role
-
     def __repr__(self):
         return '<User %r>' % (self.name)
+
+
+class Posts(Base):
+    """
+    :summary:
+    """
+    __tablename__ = 't_posts'
+
+    id = Column(Integer, primary_key=True)
+    body = Column(String(140))
+    timestamp = Column(DateTime)
+    user_id = Column(Integer, ForeignKey('t_users.id'))
