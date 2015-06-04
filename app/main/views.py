@@ -4,11 +4,12 @@
 
 """
 
-from flask import render_template, flash, session, redirect, url_for
+from flask import render_template, flash, session, redirect, url_for, g
 
 from . import main
 from app.main.forms import LoginForm
 # from app.database import db_session
+from app.view_decorators import log_required
 
 
 # @main.teardown_request
@@ -17,8 +18,17 @@ from app.main.forms import LoginForm
 
 
 
+@main.before_request
+def before_request():
+    if 'user_name' in session:
+        g.user = session['user_name']
+    else:
+        g.user = None
+
+
 @main.route('/')
 @main.route('/index')
+@log_required
 def index():
     # user = {'nickname': 'Andy'}
     user = {'user_name': session['user_name']}
