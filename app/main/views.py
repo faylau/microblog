@@ -8,6 +8,7 @@ from flask import render_template, flash, session, redirect, url_for
 
 from . import main
 from app.main.forms import LoginForm
+# from app.database import db_session
 
 
 # @main.teardown_request
@@ -49,7 +50,7 @@ def login():
         if u is not None and form.password.data == u.password:
             flash('Welcome {0}!'.format(u.username))
             session['user_name'] = u.username
-            return redirect(url_for('index'))
+            return redirect(url_for('.index'))
         elif u is None:
             error = 'User <{0}> does not exist.'.format(u.username)
         else:

@@ -6,21 +6,22 @@ from sqlalchemy import Column, Integer, String, SmallInteger, DateTime, \
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 # from config import SQLALCHEMY_DATABASE_URI
 from app import app
+from database import Base, engine
 
 print app.config
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
 # engine = create_engine(SQLALCHEMY_DATABASE_URI, convert_unicode=True, echo=True)
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
-                       convert_unicode=True,
-                       echo=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-
-Base = declarative_base()
-Base.query = db_session.query_property()
+# engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
+#                        convert_unicode=True,
+#                        echo=True)
+# db_session = scoped_session(sessionmaker(autocommit=False,
+#                                          autoflush=False,
+#                                          bind=engine))
+#
+# Base = declarative_base()
+# Base.query = db_session.query_property()
 
 
 def init_db():
@@ -45,26 +46,26 @@ class User(Base):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
-    def is_authenticated(self):
-        """ Use Flask-Login to deal with login, you must implement this method.
-        """
-        return True
-
-    def is_active(self):
-        """ Use Flask-Login to deal with login, you must implement this method.
-        """
-        return True
-
-    def is_anonymous(self):
-        """ Use Flask-Login to deal with login, you must implement this method.
-        """
-        return False
-
-    def get_id(self):
-        """ Use Flask-Login to deal with login, you must implement this method.
-        Returned user id should be unicode type.
-        """
-        return unicode(self.id)
+    # def is_authenticated(self):
+    #     """ Use Flask-Login to deal with login, you must implement this method.
+    #     """
+    #     return True
+    #
+    # def is_active(self):
+    #     """ Use Flask-Login to deal with login, you must implement this method.
+    #     """
+    #     return True
+    #
+    # def is_anonymous(self):
+    #     """ Use Flask-Login to deal with login, you must implement this method.
+    #     """
+    #     return False
+    #
+    # def get_id(self):
+    #     """ Use Flask-Login to deal with login, you must implement this method.
+    #     Returned user id should be unicode type.
+    #     """
+    #     return unicode(self.id)
 
 
 class Post(Base):

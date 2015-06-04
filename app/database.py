@@ -11,17 +11,17 @@ migration实现；
 
 import os.path
 
-from migrate.versioning import api
+# from migrate.versioning import api
 import imp
-from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO
-from app import db
+# from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO
+from app import db, app
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI, convert_unicode=True, echo=True)
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], convert_unicode=True, echo=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
