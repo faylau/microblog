@@ -4,7 +4,7 @@
 
 """
 
-from flask import render_template, flash, session, redirect, url_for, g
+from flask import render_template, flash, session, redirect, url_for, g, request
 
 from . import main
 from app.main.forms import LoginForm
@@ -15,7 +15,6 @@ from app.view_decorators import log_required
 # @main.teardown_request
 # def shutdown_session(exception=None):
 #     db_session.remove()
-
 
 
 @main.before_request
@@ -47,24 +46,35 @@ def login():
     :summary:
     :return:
     """
-    if 'username' in session:
-        return redirect(url_for('index'))
-
     form = LoginForm()
-    if form.validate_on_submit():
-        error = None
-        session['remember_me'] = form.remember_me.data
-        from app.models import User
-        u = User.query.filter(User.username == form.username.data).one()
-        print u
-        if u is not None and form.password.data == u.password:
-            flash('Welcome {0}!'.format(u.username))
-            session['user_name'] = u.username
-            return redirect(url_for('.index'))
-        elif u is None:
-            error = 'User <{0}> does not exist.'.format(u.username)
-        else:
-            error = 'Password is incorrect.'
-        return render_template('login.html', title='Sign In', form=form,
-                               error=error)
-    return render_template('login.html', title='Sign In', form=form)
+
+    if request.method == 'GET':
+        return render_template('login.html', title='Sign In', form=form)
+    else:
+        if 'user_name' in session:
+            # 使用blueprint后，index前加blueprint名称；
+            return redirect(url_for('main.index'))
+
+        if form.validate_on_submit():
+            session['remember_me'] = form.remember_me.data
+            from app.models import User
+            try:
+                u = User.query.filter(User.username == form.username.data).one()
+            except Exception:
+                error = 'User <{0}> does not exist.'.format(form.username.data)
+                return render_template('login.html', title='Sign In',
+                                       form=form, error=error)
+            else:
+                if form.password.data == u.password:
+                    session['user_name'] = u.username
+                    return redirect(url_for('main.index'))
+                else:
+                    error = 'Password is incorrect.'
+                    return render_template('login.html', title='Sign In',
+                                           form=form, error=error)
+        return render_template('login.html', title='Sign In', form=form)
+
+
+@main.route('/logout')
+def logout():
+    pass
