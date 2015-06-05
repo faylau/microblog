@@ -29,7 +29,6 @@ def before_request():
 @main.route('/index')
 @log_required
 def index():
-    # user = {'nickname': 'Andy'}
     user = {'user_name': session['user_name']}
     posts = [
         {'author': {'nickname': 'John'},
@@ -48,33 +47,45 @@ def login():
     """
     form = LoginForm()
 
-    if request.method == 'GET':
-        return render_template('login.html', title='Sign In', form=form)
-    else:
-        if 'user_name' in session:
-            # 使用blueprint后，index前加blueprint名称；
-            return redirect(url_for('main.index'))
+    if 'user_name' in session:
+        # 使用blueprint后，index前加blueprint名称；
+        return redirect(url_for('main.index'))
 
-        if form.validate_on_submit():
-            session['remember_me'] = form.remember_me.data
-            from app.models import User
-            try:
-                u = User.query.filter(User.username == form.username.data).one()
-            except Exception:
-                error = 'User <{0}> does not exist.'.format(form.username.data)
-                return render_template('login.html', title='Sign In',
-                                       form=form, error=error)
-            else:
-                if form.password.data == u.password:
-                    session['user_name'] = u.username
-                    return redirect(url_for('main.index'))
-                else:
-                    error = 'Password is incorrect.'
-                    return render_template('login.html', title='Sign In',
-                                           form=form, error=error)
-        return render_template('login.html', title='Sign In', form=form)
+    if form.validate_on_submit():
+        session['remember_me'] = form.remember_me.data
+        from app.models import User
+        u = User.query.filter(User.username == form.username.data).first()
+        if u is not None and form.password.data == u.password:
+            session['user_name'] = u.username
+            return redirect(url_for('.index'))
+        else:
+            error = 'Incorrect username or password. Please try again.'
+            return render_template('login.html', title='Sign In',
+                                   form=form, error=error)
+    return render_template('login.html', title='Sign In', form=form)
 
 
 @main.route('/logout')
+@log_required
 def logout():
-    pass
+    session.pop('user_name')
+    flash('You have been logged out.')
+    return redirect(url_for('main.login'))
+
+
+@main.route('/user/<username>')
+@log_required
+def user(username):
+    if g.user != username:
+        return redirect(url_for('.index'))
+
+    from app.models import User
+    user = User.query.filter(User.username == username).first()
+    if user is None:
+        flash('不存在用户：{0}！'.format(username))
+        return redirect(url_for('.index'))
+    posts = [
+        { 'author': user, 'body': 'Test post #1' },
+        { 'author': user, 'body': 'Test post #2' }
+    ]
+    return render_template('user.html', user=user, posts=posts)

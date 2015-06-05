@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>用户: {{ user.username }}!</h1>
+<hr>
+{% for post in posts %}
+<p>
+    {{post.author.username}} 发布了: <b>{{ post.body }}</b>
+</p>
+{% endfor %}
+{% endblock %}

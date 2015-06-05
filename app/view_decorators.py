@@ -13,7 +13,7 @@ def log_required(fn):
     @wraps(fn)
     def decorated_function(*args, **kwargs):
         if g.user is None:
-            return redirect(url_for('login'))
+            return redirect(url_for('.login'))
         return fn(*args, **kwargs)
     return decorated_function
 

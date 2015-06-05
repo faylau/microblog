@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
         {% if title %}
         <title>{{ title }} - microblog</title>
         {% else %}
@@ -9,7 +10,13 @@
         {% endif %}
     </head>
     <body>
-        <div>Microblog: <a href="/index">Home</a></div>
+        <div>Microblog:
+            <a href="{{ url_for('main.index') }}">Home</a>
+            {% if g.user %}
+            | <a href="{{ url_for('main.user', username=g.user) }}">个人资料</a>
+            | <a href="{{ url_for('main.logout') }}">退出</a>
+            {% endif %}
+        </div>
         <hr>
             <ul>
             {% for message in get_flashed_messages() %}
