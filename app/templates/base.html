@@ -13,7 +13,7 @@
         <div>Microblog:
             <a href="{{ url_for('main.index') }}">Home</a>
             {% if g.user %}
-            | <a href="{{ url_for('main.user', username=g.user) }}">个人资料</a>
+            | <a href="{{ url_for('main.user', username=g.user.username) }}">个人资料</a>
             | <a href="{{ url_for('main.logout') }}">退出</a>
             {% endif %}
         </div>

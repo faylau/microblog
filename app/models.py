@@ -1,10 +1,10 @@
-# coding=utf-8
+#coding=utf-8
 
+from hashlib import md5
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, SmallInteger, DateTime, \
     ForeignKey, create_engine
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
-# from config import SQLALCHEMY_DATABASE_URI
 from app import app
 from database import Base, engine
 
@@ -12,6 +12,7 @@ print app.config
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
+# SQLALCHEMY_DATABASE_URI = 'sqlite:///E:\GitHub\microblog\data-dev.db'
 # engine = create_engine(SQLALCHEMY_DATABASE_URI, convert_unicode=True, echo=True)
 # engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
 #                        convert_unicode=True,
@@ -38,13 +39,31 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(String(40), index=True, unique=True, nullable=False)
+    nickname = Column(String(40), index=True, unique=True, nullable=False)
     password = Column(String(20), nullable=False)
     email = Column(String(120), index=True, unique=True)
     role = Column(SmallInteger, default=ROLE_USER)
     posts = relationship('Post', backref='author', lazy='dynamic')
+    about_me = Column(String(140))
+    last_seen = Column(DateTime)
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
+    def avatar(self, size):
+        return 'http://www.gravatar.com/avatar' + md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
+
+    @staticmethod
+    def make_unique_nickname(nickname):
+        if User.query.filter_by(nickname=nickname).first() is None:
+            return nickname
+        version = 2
+        while True:
+            new_nickname = nickname + str(version)
+            if User.query.filter_by(nickname=new_nickname).first() is None:
+                break
+            version += 1
+        return new_nickname
 
     # def is_authenticated(self):
     #     """ Use Flask-Login to deal with login, you must implement this method.
@@ -86,8 +105,11 @@ class Post(Base):
 if __name__ == "__main__":
     # init_db()
     # drop_db()
-    # u1 = User(username='admin', password='111111', email='admin@qq.com', role=ROLE_ADMIN)
-    # u2 = User(username='andy', password='111111', email='andy@qq.com', role=ROLE_USER)
+    # u1 = User(username='admin', nickname=u'系统管理员', password='111111',
+    #           email='admin@qq.com', about_me='', role=ROLE_ADMIN)
+    # u2 = User(username='andy', nickname=u'D调的华丽', password='111111',
+    #           email='andy@qq.com', about_me='', role=ROLE_USER)
+    # db_session.add(u1)
     # db_session.add(u2)
     # db_session.commit()
     pass

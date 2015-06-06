@@ -1,4 +1,4 @@
-# coding=utf-8
+#coding=utf-8
 
 """
 1. SQLAlchemy-migration现在是openstack社区维护的一个项目，主要用于实现SQLAlchemy相
