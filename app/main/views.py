@@ -7,7 +7,7 @@
 import pickle
 from datetime import datetime
 
-from flask import render_template, flash, session, redirect, url_for, g, request
+from flask import render_template, flash, session, redirect, url_for, g
 
 from . import main
 from app.main.forms import LoginForm, EditForm
@@ -92,8 +92,8 @@ def user(username):
         flash('不存在用户：{0}！'.format(username))
         return redirect(url_for('.index'))
     posts = [
-        { 'author': user, 'body': 'Test post #1' },
-        { 'author': user, 'body': 'Test post #2' }
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
     ]
     return render_template('user.html', user=user, posts=posts)
 
