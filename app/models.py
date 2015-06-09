@@ -47,6 +47,13 @@ class User(Base):
     about_me = Column(String(140))
     last_seen = Column(DateTime)
 
+    # def __init__(self, username, nickname, password, email, role=ROLE_USER):
+    #     self.username = username
+    #     self.nickname = nickname
+    #     self.password = password
+    #     self.email = email
+    #     self.role = role
+
     def __repr__(self):
         return '<User %r>' % (self.username)
 

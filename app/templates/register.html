@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- extend base layout -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1>注册 - 请填写您的注册资料</h1>
+<form action="" method="post" name="register">
+    {{ form.hidden_tag() }}
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td>{{ form.username(size=24) }}</td>
+            {% for error in form.errors.username %}
+            <br><span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>昵称：</td>
+            <td>{{ form.nickname(size=24) }}</td>
+            {% for error in form.errors.nickname %}
+            <br><span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>Email：</td>
+            <td>{{ form.email(size=24) }}</td>
+        </tr>
+        <tr>
+            <td>密码：</td>
+            <td>{{ form.password(size=24) }}</td>
+        </tr>
+        <tr>
+            <td>确认密码：</td>
+            <td>{{ form.confirm_password(size=24) }}</td>
+            {% for error in form.errors.confirm_password %}
+            <br><span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="保存"></td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

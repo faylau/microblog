@@ -16,7 +16,7 @@
             | <a href="{{ url_for('main.user', username=g.user.username) }}">个人资料</a>
             | <a href="{{ url_for('main.logout') }}">退出</a>
             {% else %}
-            | <a href="{{ url_for('main.login') }}">注册</a>
+            | <a href="{{ url_for('main.register') }}">注册</a>
             {% endif %}
         </div>
         <hr>

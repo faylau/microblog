@@ -10,7 +10,7 @@ from datetime import datetime
 from flask import render_template, flash, session, redirect, url_for, g
 
 from . import main
-from app.main.forms import LoginForm, EditForm
+from app.main.forms import LoginForm, EditForm, RegisterForm
 # from app.database import db_session
 from app.view_decorators import log_required
 
@@ -116,3 +116,21 @@ def edit():
         form.email.data = g.user.email
         form.about_me.data = g.user.about_me
     return render_template('edit.html', form=form)
+
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    if g.user:
+         return redirect(url_for('main.index'))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        from app.models import User
+        from app.database import db_session
+        user = User(username=form.username.data, nickname=form.nickname.data,
+                    password=form.password.data, email=form.email.data)
+        db_session.add(user)
+        db_session.commit()
+        flash(u'注册成功，登录以后即可以浏览使用您的microblog！')
+        return redirect(url_for('main.login'))
+
+    return render_template('register.html', form=form)
